@@ -58,10 +58,10 @@ const Price = () => (
           <NavLink to="/">Início</NavLink>
         </li>
         <li>
-          <NavLink to="price">Preço</NavLink>
+          <NavLink to="">Preço</NavLink>
         </li>
         <li>
-          <NavLink to="about">Sobre</NavLink>
+          <NavLink to="/about">Sobre</NavLink>
         </li>
       </ul>
     </nav>
@@ -95,10 +95,10 @@ const About = () => (
           <NavLink to="/">Início</NavLink>
         </li>
         <li>
-          <NavLink to="price">Preço</NavLink>
+          <NavLink to="/price">Preço</NavLink>
         </li>
         <li>
-          <NavLink to="about">Sobre</NavLink>
+          <NavLink to="">Sobre</NavLink>
         </li>
       </ul>
     </nav>
@@ -116,9 +116,22 @@ const About = () => (
           comunidade.
         </p>
       </div>
-      <img className="img" src="sobre-viajou-anotou.jpg" alt="" />
+      <img
+        className="img"
+        src="sobre-viajou-anotou.jpg"
+        alt="Logo da viajou anotou"
+      />
     </section>
   </main>
+)
+
+const NotFound = () => (
+  <section className="notFound">
+    <h1>Opsss Pagina não encontrada =/</h1>
+    <p>
+      Mas você pode voltar para o <Link patch="/">Inicio</Link>
+    </p>
+  </section>
 )
 
 const router = createBrowserRouter(
@@ -127,6 +140,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Home />} />
       <Route path="price" element={<Price />} />
       <Route path="about" element={<About />} />
+      <Route path="*" element={<NotFound />} />
     </Route>,
   ),
 )

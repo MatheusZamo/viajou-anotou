@@ -155,3 +155,25 @@ main {
   width: 450px;
   border-radius: 50px;
 }
+
+.notFound {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  text-align: center;
+  margin-top: 200px;
+}
+
+.notFound h1 {
+  font-size: 4.5rem;
+  line-height: 1.3;
+}
+
+.notFound p {
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 3rem 0;
+}
