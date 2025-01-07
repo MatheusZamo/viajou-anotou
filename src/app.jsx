@@ -16,6 +16,7 @@ const Home = () => (
           src="logo-viajou-anotou-light.png"
           alt="Logo da viajou anotou"
         />
+
         <ul>
           <li>
             <NavLink to="/">Início</NavLink>
@@ -43,9 +44,82 @@ const Home = () => (
   </main>
 )
 
-const Price = () => <h1>Price</h1>
+const Price = () => (
+  <main className="main-pricing">
+    <nav className="nav">
+      <img
+        className="logo"
+        src="logo-viajou-anotou-dark.png"
+        alt="Logo da viajou anotou"
+      />
 
-const About = () => <h1>About</h1>
+      <ul>
+        <li>
+          <NavLink to="/">Início</NavLink>
+        </li>
+        <li>
+          <NavLink to="price">Preço</NavLink>
+        </li>
+        <li>
+          <NavLink to="about">Sobre</NavLink>
+        </li>
+      </ul>
+    </nav>
+    <section>
+      <div>
+        <h1>
+          Preço simples.
+          <br /> Só R$ 47/mês.
+        </h1>
+        <p>
+          Comece hoje mesmo a anotar suas aventuras e mostre aos seus amigos o
+          quê você fez pelo mundo.
+        </p>
+      </div>
+      <img className="img" src="preco-viajou-anotou.jpg" alt="" />
+    </section>
+  </main>
+)
+
+const About = () => (
+  <main className="main-about">
+    <nav className="nav">
+      <img
+        className="logo"
+        src="logo-viajou-anotou-dark.png"
+        alt="Logo da viajou anotou"
+      />
+
+      <ul>
+        <li>
+          <NavLink to="/">Início</NavLink>
+        </li>
+        <li>
+          <NavLink to="price">Preço</NavLink>
+        </li>
+        <li>
+          <NavLink to="about">Sobre</NavLink>
+        </li>
+      </ul>
+    </nav>
+
+    <section>
+      <div>
+        <h1>Sobre o ViajouAnotou.</h1>
+        <p>
+          O ViajouAnotou nasceu do desejo dos amigos Paulo e Roberto de
+          compartilharem de forma rápida suas aventuras pelo mundo.
+        </p>
+        <p>
+          Aos poucos, esse desejo virou realidade em forma de software entre
+          amigos e familiares. Hoje, você também pode ser parte dessa
+          comunidade.
+        </p>
+      </div>
+      <img className="img" src="sobre-viajou-anotou.jpg" alt="" />
+    </section>
+  </main>
+)
 
 const router = createBrowserRouter(
   createRoutesFromElements(

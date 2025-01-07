@@ -145,8 +145,13 @@ main {
   margin: 3rem 0;
 }
 
-.main-pricing img,
+/* .main-pricing img,
 .main-about img {
   border-radius: 50px;
   width: 460px;
+} */
+.img {
+  height: 350px;
+  width: 450px;
+  border-radius: 50px;
 }
