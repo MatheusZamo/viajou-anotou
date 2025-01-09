@@ -110,7 +110,8 @@ main {
 }
 
 .main-pricing,
-.main-about {
+.main-about,
+.main-not-found {
   background-color: white;
   color: #666;
   display: flex;
@@ -119,7 +120,8 @@ main {
 }
 
 .main-pricing section,
-.main-about section {
+.main-about section,
+.main-not-found section {
   display: flex;
   align-items: center;
   gap: 7rem;
@@ -132,14 +134,16 @@ main {
 }
 
 .main-pricing h1,
-.main-about h1 {
+.main-about h1,
+.main-not-found h1 {
   font-size: 5rem;
   font-weight: 800;
   line-height: 6rem;
 }
 
 .main-pricing p,
-.main-about p {
+.main-about p,
+.main-not-found p {
   font-size: 2rem;
   font-weight: 400;
   margin: 3rem 0;
@@ -151,24 +155,11 @@ main {
   width: 360px;
 }
 
-.notFound {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  gap: 2.5rem;
+.main-not-found a {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.main-not-found {
   text-align: center;
-  margin-top: 200px;
-}
-
-.notFound h1 {
-  font-size: 4.5rem;
-  line-height: 1.3;
-}
-
-.notFound p {
-  font-size: 2rem;
-  font-weight: 400;
-  margin: 3rem 0;
 }

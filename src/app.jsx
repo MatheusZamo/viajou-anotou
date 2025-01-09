@@ -118,12 +118,19 @@ const About = () => (
 )
 
 const NotFound = () => (
-  <section className="notFound">
-    <h1>Opsss Pagina não encontrada =/</h1>
-    <p>
-      Mas você pode voltar para o <Link patch="/">Inicio</Link>
-    </p>
-  </section>
+  <>
+    <Header />
+    <main className="main-not-found">
+      <section>
+        <div>
+          <h1>Pagina não encontrada =/</h1>
+          <p>
+            Volte para a <Link patch="/">página inicial</Link>
+          </p>
+        </div>
+      </section>
+    </main>
+  </>
 )
 
 const router = createBrowserRouter(
