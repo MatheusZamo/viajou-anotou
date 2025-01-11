@@ -20,7 +20,7 @@ const Header = () => {
 
   return (
     <nav className="nav">
-      <Link to="/">
+      <Link to="app">
         <img
           className="logo"
           src={`logo-viajou-anotou-${isNotHomepage ? "dark" : "light"}.png`}
@@ -43,6 +43,9 @@ const Header = () => {
             </li>
           )
         })}
+        <Link to="login" className="cta">
+          Login
+        </Link>
       </ul>
     </nav>
   )
@@ -133,12 +136,22 @@ const NotFound = () => (
   </>
 )
 
+const Login = () => {
+  return <h1>Login</h1>
+}
+
+const Map = () => {
+  return <h1>Map</h1>
+}
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
       <Route path="/" element={<Home />} />
       <Route path="price" element={<Price />} />
       <Route path="about" element={<About />} />
+      <Route path="login" element={<Login />} />
+      <Route path="app" element={<Map />} />
       <Route path="*" element={<NotFound />} />
     </Route>,
   ),
