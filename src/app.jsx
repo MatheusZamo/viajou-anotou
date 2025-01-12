@@ -20,7 +20,7 @@ const Header = () => {
 
   return (
     <nav className="nav">
-      <Link to="app">
+      <Link to="/">
         <img
           className="logo"
           src={`logo-viajou-anotou-${isNotHomepage ? "dark" : "light"}.png`}
@@ -43,7 +43,7 @@ const Header = () => {
             </li>
           )
         })}
-        <Link to="login" className="cta">
+        <Link to="/login" className="cta">
           Login
         </Link>
       </ul>
@@ -64,7 +64,7 @@ const Home = () => (
           Um mapa mundial que rastreia por onde você passou. Nunca esqueça suas
           experiências e mostre aos seus amigos o quê você fez pelo mundo.
         </h2>
-        <Link to="about" className="cta">
+        <Link to="app" className="cta">
           Começar Agora
         </Link>
       </section>
@@ -137,7 +137,22 @@ const NotFound = () => (
 )
 
 const Login = () => {
-  return <h1>Login</h1>
+  return (
+    <main className="main-login">
+      <Header />
+      <form className="form-login">
+        <label>
+          Email
+          <input type="email" />
+        </label>
+        <label>
+          Senha
+          <input type="password" />
+        </label>
+        <button>Login</button>
+      </form>
+    </main>
+  )
 }
 
 const Map = () => {
