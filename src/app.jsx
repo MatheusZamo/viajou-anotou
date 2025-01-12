@@ -6,6 +6,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
   useLocation,
+  Outlet,
 } from "react-router-dom"
 
 const links = [
@@ -155,8 +156,43 @@ const Login = () => {
   )
 }
 
-const Map = () => {
-  return <h1>Map</h1>
+const AppLayout = () => {
+  return (
+    <main className="main-app-layout">
+      <sidebar className="sidebar">
+        <Link to="/">
+          <img
+            className="logo"
+            src="logo-viajou-anotou-dark.png"
+            alt="Logo da viajou anotou"
+          />
+        </Link>
+        <nav className="nav-app-layout">
+          <ul>
+            <li>
+              <NavLink to="cities">Cidades</NavLink>
+            </li>
+            <li>
+              <NavLink to="country">Países</NavLink>
+            </li>
+          </ul>
+
+          <Outlet />
+        </nav>
+      </sidebar>
+      <div className="map">
+        <h1>Map</h1>
+      </div>
+    </main>
+  )
+}
+
+const Cities = () => {
+  return <h1>Cities</h1>
+}
+
+const Country = () => {
+  return <h1>Country</h1>
 }
 
 const router = createBrowserRouter(
@@ -166,7 +202,10 @@ const router = createBrowserRouter(
       <Route path="price" element={<Price />} />
       <Route path="about" element={<About />} />
       <Route path="login" element={<Login />} />
-      <Route path="app" element={<Map />} />
+      <Route path="app" element={<AppLayout />}>
+        <Route path="cities" element={<Cities />} />
+        <Route path="country" element={<Country />} />
+      </Route>
       <Route path="*" element={<NotFound />} />
     </Route>,
   ),
