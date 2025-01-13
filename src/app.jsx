@@ -8,6 +8,7 @@ import {
   RouterProvider,
   useLocation,
   Outlet,
+  useParams,
 } from "react-router-dom"
 
 const links = [
@@ -191,11 +192,28 @@ const Cities = ({ cities }) => {
   return (
     <div className="cities">
       {cities.map((citie) => (
-        <Link key={citie.id}>
+        <Link key={citie.id} to={`/app/${citie.id}`}>
           <h3>{citie.name}</h3>
           <button>x</button>
         </Link>
       ))}
+    </div>
+  )
+}
+
+const CityDetails = ({ cities }) => {
+  const params = useParams()
+  const citie = cities.find((c) => String(c.id) === params.id)
+  return (
+    <div className="city-details">
+      <div className="row">
+        <h5>Nome da Cidade</h5>
+        <h3>{citie.name}</h3>
+      </div>
+      <div className="row">
+        <h5>Suas Anotações</h5>
+        <p>{citie.notes}</p>
+      </div>
     </div>
   )
 }
@@ -224,7 +242,8 @@ const App = () => {
         <Route path="login" element={<Login />} />
         <Route path="app" element={<AppLayout />}>
           <Route path="cities" element={<Cities cities={cities} />} />
-          <Route path="country" element={<Country />} />
+          <Route path=":id" element={<CityDetails cities={cities} />} />
+          <Route path="country" element={<Country cities={cities} />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>,
