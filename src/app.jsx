@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react"
 import {
   Route,
   Link,
@@ -159,7 +160,7 @@ const Login = () => {
 const AppLayout = () => {
   return (
     <main className="main-app-layout">
-      <sidebar className="sidebar">
+      <aside className="sidebar">
         <Link to="/">
           <img
             className="logo"
@@ -176,10 +177,9 @@ const AppLayout = () => {
               <NavLink to="country">Países</NavLink>
             </li>
           </ul>
-
-          <Outlet />
         </nav>
-      </sidebar>
+        <Outlet />
+      </aside>
       <div className="map">
         <h1>Map</h1>
       </div>
@@ -187,30 +187,51 @@ const AppLayout = () => {
   )
 }
 
-const Cities = () => {
-  return <h1>Cities</h1>
+const Cities = ({ cities }) => {
+  return (
+    <div className="cities">
+      {cities.map((citie) => (
+        <Link key={citie.id}>
+          <h3>{citie.name}</h3>
+          <button>x</button>
+        </Link>
+      ))}
+    </div>
+  )
 }
 
 const Country = () => {
   return <h1>Country</h1>
 }
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/">
-      <Route path="/" element={<Home />} />
-      <Route path="price" element={<Price />} />
-      <Route path="about" element={<About />} />
-      <Route path="login" element={<Login />} />
-      <Route path="app" element={<AppLayout />}>
-        <Route path="cities" element={<Cities />} />
-        <Route path="country" element={<Country />} />
-      </Route>
-      <Route path="*" element={<NotFound />} />
-    </Route>,
-  ),
-)
+const App = () => {
+  const [cities, setCities] = useState([])
 
-const App = () => <RouterProvider router={router} />
+  useEffect(() => {
+    fetch(
+      "https://raw.githubusercontent.com/MatheusZamo/viajou-anotou/refs/heads/main/src/fake-cities.json",
+    )
+      .then((response) => response.json())
+      .then((data) => setCities(data))
+  }, [])
+
+  const router = createBrowserRouter(
+    createRoutesFromElements(
+      <Route path="/">
+        <Route path="/" element={<Home />} />
+        <Route path="price" element={<Price />} />
+        <Route path="about" element={<About />} />
+        <Route path="login" element={<Login />} />
+        <Route path="app" element={<AppLayout />}>
+          <Route path="cities" element={<Cities cities={cities} />} />
+          <Route path="country" element={<Country />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Route>,
+    ),
+  )
+
+  return <RouterProvider router={router} />
+}
 
 export { App }
