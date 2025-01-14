@@ -218,8 +218,14 @@ const CityDetails = ({ cities }) => {
   )
 }
 
-const Country = () => {
-  return <h1>Country</h1>
+const Country = ({ cities }) => {
+  return (
+    <ul className="countries">
+      {cities.map((citie) => {
+        return <li key={citie.id}>{citie.country}</li>
+      })}
+    </ul>
+  )
 }
 
 const App = () => {
