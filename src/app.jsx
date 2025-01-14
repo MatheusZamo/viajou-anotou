@@ -15,6 +15,7 @@ const links = [
   { path: "/", text: "Início" },
   { path: "/price", text: "Preço" },
   { path: "/about", text: "Sobre" },
+  { path: "/login", text: "Login" },
 ]
 
 const Header = () => {
@@ -35,20 +36,26 @@ const Header = () => {
         {links.map((link) => {
           const linkShouldBeGray =
             isNotHomepage && location.pathname !== link.path
+          const isLogin = link.path === "/login"
+
           return (
             <li key={link.text}>
               <NavLink
                 to={link.path}
-                style={linkShouldBeGray ? { color: "#C2C2C2" } : null}
+                style={
+                  linkShouldBeGray && !isLogin
+                    ? { color: "#C2C2C2" }
+                    : isLogin
+                    ? { color: "white" }
+                    : null
+                }
+                className={isLogin ? "cta" : ""}
               >
                 {link.text}
               </NavLink>
             </li>
           )
         })}
-        <Link to="/login" className="cta">
-          Login
-        </Link>
       </ul>
     </nav>
   )
