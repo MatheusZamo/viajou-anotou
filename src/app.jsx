@@ -18,20 +18,23 @@ const links = [
   { path: "/login", text: "Login" },
 ]
 
+const Logo = ({ version = "dark" }) => (
+  <Link to="/">
+    <img
+      className="logo"
+      src={`logo-viajou-anotou-${version}.png`}
+      alt="Logo da viajou anotou"
+    />
+  </Link>
+)
+
 const Header = () => {
   const location = useLocation()
   const isNotHomepage = location.pathname !== "/"
 
   return (
     <nav className="nav">
-      <Link to="/">
-        <img
-          className="logo"
-          src={`logo-viajou-anotou-${isNotHomepage ? "dark" : "light"}.png`}
-          alt="Logo da viajou anotou"
-        />
-      </Link>
-
+      <Logo version={isNotHomepage ? "dark" : "light"} />
       <ul>
         {links.map((link) => {
           const linkShouldBeGray =
@@ -177,13 +180,7 @@ const AppLayout = () => {
   return (
     <main className="main-app-layout">
       <aside className="sidebar">
-        <Link to="/">
-          <img
-            className="logo"
-            src="logo-viajou-anotou-dark.png"
-            alt="Logo da viajou anotou"
-          />
-        </Link>
+        <Logo />
         <nav className="nav-app-layout">
           <ul>
             <li>
