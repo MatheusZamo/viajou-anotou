@@ -236,11 +236,13 @@ const TripDetails = ({ cities }) => {
   )
 }
 
-const Country = ({ cities }) => {
+const Countries = ({ cities }) => {
+  const groupedByCountry = Object.groupBy(cities, ({ country }) => country)
+  const countries = Object.keys(groupedByCountry)
   return (
     <ul className="countries">
-      {cities.map((citie) => {
-        return <li key={citie.id}>{citie.country}</li>
+      {countries.map((country) => {
+        return <li key={country.id}>{country}</li>
       })}
     </ul>
   )
@@ -269,7 +271,7 @@ const App = () => {
           <Route index element={<Cities cities={cities} />} />
           <Route path="cities" element={<Cities cities={cities} />} />
           <Route path="cities/:id" element={<TripDetails cities={cities} />} />
-          <Route path="country" element={<Country cities={cities} />} />
+          <Route path="country" element={<Countries cities={cities} />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Route>,
