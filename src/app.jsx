@@ -203,15 +203,19 @@ const AppLayout = () => {
 }
 
 const Cities = ({ cities }) => {
-  return (
-    <div className="cities">
-      {cities.map((citie) => (
-        <Link key={citie.id} to={`/app/${citie.id}`}>
-          <h3>{citie.name}</h3>
-          <button>x</button>
-        </Link>
+  return cities.length === 0 ? (
+    <p>Adicione uma cidade</p>
+  ) : (
+    <ul className="cities">
+      {cities.map((city) => (
+        <li key={city.id}>
+          <Link to={`${city.id}`}>
+            <h3>{city.name}</h3>
+            <button>&times;</button>
+          </Link>
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }
 
