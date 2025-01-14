@@ -219,18 +219,18 @@ const Cities = ({ cities }) => {
   )
 }
 
-const CityDetails = ({ cities }) => {
+const TripDetails = ({ cities }) => {
   const params = useParams()
-  const citie = cities.find((c) => String(c.id) === params.id)
+  const city = cities.find((city) => String(city.id) === params.id)
   return (
     <div className="city-details">
       <div className="row">
         <h5>Nome da Cidade</h5>
-        <h3>{citie.name}</h3>
+        <h3>{city.name}</h3>
       </div>
       <div className="row">
         <h5>Suas Anotações</h5>
-        <p>{citie.notes}</p>
+        <p>{city.notes}</p>
       </div>
     </div>
   )
@@ -268,7 +268,7 @@ const App = () => {
         <Route path="app" element={<AppLayout />}>
           <Route index element={<Cities cities={cities} />} />
           <Route path="cities" element={<Cities cities={cities} />} />
-          <Route path=":id" element={<CityDetails cities={cities} />} />
+          <Route path="cities/:id" element={<TripDetails cities={cities} />} />
           <Route path="country" element={<Country cities={cities} />} />
         </Route>
         <Route path="*" element={<NotFound />} />
