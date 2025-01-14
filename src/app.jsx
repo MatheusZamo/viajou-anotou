@@ -1,14 +1,14 @@
 import { useState, useEffect } from "react"
 import {
-  Route,
-  Link,
-  NavLink,
   createBrowserRouter,
   createRoutesFromElements,
-  RouterProvider,
   useLocation,
-  Outlet,
   useParams,
+  RouterProvider,
+  Route,
+  NavLink,
+  Link,
+  Outlet,
 } from "react-router-dom"
 
 const links = [
@@ -179,8 +179,10 @@ const Login = () => {
 const AppLayout = () => {
   return (
     <main className="main-app-layout">
-      <aside className="sidebar">
-        <Logo />
+      <div className="sidebar">
+        <header>
+          <Logo />
+        </header>
         <nav className="nav-app-layout">
           <ul>
             <li>
@@ -192,7 +194,7 @@ const AppLayout = () => {
           </ul>
         </nav>
         <Outlet />
-      </aside>
+      </div>
       <div className="map">
         <h1>Map</h1>
       </div>
@@ -249,6 +251,7 @@ const App = () => {
     )
       .then((response) => response.json())
       .then((data) => setCities(data))
+      .catch((error) => alert(error.message))
   }, [])
 
   const router = createBrowserRouter(
