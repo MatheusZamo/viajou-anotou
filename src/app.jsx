@@ -141,20 +141,28 @@ const NotFound = () => (
 
 const Login = () => {
   return (
-    <main className="main-login">
+    <>
       <Header />
-      <form className="form-login">
-        <label>
-          Email
-          <input type="email" />
-        </label>
-        <label>
-          Senha
-          <input type="password" />
-        </label>
-        <button>Login</button>
-      </form>
-    </main>
+      <main className="main-login">
+        <section>
+          <form className="form-login">
+            <div className="row">
+              <label>
+                Email
+                <input type="email" />
+              </label>
+            </div>
+            <div className="row">
+              <label>
+                Senha
+                <input type="password" />
+              </label>
+            </div>
+            <button>Login</button>
+          </form>
+        </section>
+      </main>
+    </>
   )
 }
 
