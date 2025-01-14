@@ -262,6 +262,7 @@ const App = () => {
         <Route path="about" element={<About />} />
         <Route path="login" element={<Login />} />
         <Route path="app" element={<AppLayout />}>
+          <Route index element={<Cities cities={cities} />} />
           <Route path="cities" element={<Cities cities={cities} />} />
           <Route path=":id" element={<CityDetails cities={cities} />} />
           <Route path="country" element={<Country cities={cities} />} />
