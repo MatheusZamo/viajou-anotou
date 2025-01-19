@@ -4,12 +4,14 @@ import {
   createRoutesFromElements,
   useLocation,
   useParams,
+  useSearchParams,
   RouterProvider,
   Route,
   NavLink,
   Link,
   Outlet,
 } from "react-router-dom"
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
 
 const links = [
   { path: "/", text: "Início" },
@@ -176,7 +178,22 @@ const Login = () => {
   )
 }
 
+const ChangeCenter = ({ position }) => {
+  const map = useMap()
+  map.setView(position)
+  return null
+}
+
+const beloHorizontePosition = {
+  latitude: "-19.917622853492556",
+  longitude: "-43.94031082020503",
+}
+
 const AppLayout = () => {
+  const [searchParams, setSearchParams] = useSearchParams(beloHorizontePosition)
+  const latitude = searchParams.get("latitude")
+  const longitude = searchParams.get("longitude")
+
   return (
     <main className="main-app-layout">
       <div className="sidebar">
@@ -196,7 +213,23 @@ const AppLayout = () => {
         <Outlet />
       </div>
       <div className="map">
-        <h1>Map</h1>
+        <MapContainer
+          center={[latitude, longitude]}
+          zoom={13}
+          scrollWheelZoom={true}
+          className="map-container"
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <Marker position={[latitude, longitude]}>
+            <Popup>
+              A pretty CSS3 popup. <br /> Easily customizable.
+            </Popup>
+          </Marker>
+          <ChangeCenter position={[latitude, longitude]} />
+        </MapContainer>
       </div>
     </main>
   )
@@ -207,10 +240,12 @@ const Cities = ({ cities }) => {
     <p>Adicione uma cidade</p>
   ) : (
     <ul className="cities">
-      {cities.map((city) => (
-        <li key={city.id}>
-          <Link to={`${city.id}`}>
-            <h3>{city.name}</h3>
+      {cities.map(({ id, position, name }) => (
+        <li key={id}>
+          <Link
+            to={`${id}?latitude=${position.latitude}&longitude=${position.longitude}`}
+          >
+            <h3>{name}</h3>
             <button>&times;</button>
           </Link>
         </li>
@@ -250,10 +285,9 @@ const Countries = ({ cities }) => {
 
 const App = () => {
   const [cities, setCities] = useState([])
-
   useEffect(() => {
     fetch(
-      "https://raw.githubusercontent.com/MatheusZamo/viajou-anotou/refs/heads/main/src/fake-cities.json",
+      "https://raw.githubusercontent.com/MatheusZamo/learning-react-router/refs/heads/main/src/fake-city.json",
     )
       .then((response) => response.json())
       .then((data) => setCities(data))
