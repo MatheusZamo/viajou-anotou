@@ -1,4 +1,3 @@
-import { useState, useEffect } from "react"
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -6,6 +5,8 @@ import {
   useParams,
   useSearchParams,
   useNavigate,
+  useLoaderData,
+  useOutletContext,
   RouterProvider,
   Route,
   NavLink,
@@ -191,10 +192,18 @@ const beloHorizontePosition = {
   longitude: "-43.94031082020503",
 }
 
+const getDataCities = async () => {
+  const data = await fetch(
+    "https://raw.githubusercontent.com/MatheusZamo/learning-react-router/refs/heads/main/src/fake-city.json",
+  )
+  return await data.json()
+}
+
 const AppLayout = () => {
   const [searchParams, setSearchParams] = useSearchParams(beloHorizontePosition)
   const latitude = searchParams.get("latitude")
   const longitude = searchParams.get("longitude")
+  const cities = useLoaderData()
 
   return (
     <main className="main-app-layout">
@@ -212,7 +221,7 @@ const AppLayout = () => {
             </li>
           </ul>
         </nav>
-        <Outlet />
+        <Outlet context={cities} />
       </div>
       <div className="map">
         <MapContainer
@@ -237,7 +246,9 @@ const AppLayout = () => {
   )
 }
 
-const Cities = ({ cities }) => {
+const Cities = () => {
+  const cities = useOutletContext()
+
   return cities.length === 0 ? (
     <p>Adicione uma cidade</p>
   ) : (
@@ -256,8 +267,9 @@ const Cities = ({ cities }) => {
   )
 }
 
-const TripDetails = ({ cities }) => {
+const TripDetails = () => {
   const params = useParams()
+  const cities = useOutletContext()
   const city = cities.find((city) => String(city.id) === params.id)
   const navigate = useNavigate()
 
@@ -279,7 +291,8 @@ const TripDetails = ({ cities }) => {
   )
 }
 
-const Countries = ({ cities }) => {
+const Countries = () => {
+  const cities = useOutletContext()
   const groupedByCountry = Object.groupBy(cities, ({ country }) => country)
   const countries = Object.keys(groupedByCountry)
   return (
@@ -290,40 +303,24 @@ const Countries = ({ cities }) => {
     </ul>
   )
 }
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/">
+      <Route path="/" element={<Home />} />
+      <Route path="price" element={<Price />} />
+      <Route path="about" element={<About />} />
+      <Route path="login" element={<Login />} />
+      <Route path="app" element={<AppLayout />} loader={getDataCities}>
+        <Route index element={<Navigate replace to="cities" />} />
+        <Route path="cities" element={<Cities />} />
+        <Route path="cities/:id" element={<TripDetails />} />
+        <Route path="country" element={<Countries />} />
+      </Route>
+      <Route path="*" element={<NotFound />} />
+    </Route>,
+  ),
+)
 
-const App = () => {
-  const [cities, setCities] = useState([])
-  useEffect(() => {
-    fetch(
-      "https://raw.githubusercontent.com/MatheusZamo/learning-react-router/refs/heads/main/src/fake-city.json",
-    )
-      .then((response) => response.json())
-      .then((data) => setCities(data))
-      .catch((error) => alert(error.message))
-  }, [])
-
-  const router = createBrowserRouter(
-    createRoutesFromElements(
-      <Route path="/">
-        <Route path="/" element={<Home />} />
-        <Route path="price" element={<Price />} />
-        <Route path="about" element={<About />} />
-        <Route path="login" element={<Login />} />
-        <Route path="app" element={<AppLayout />}>
-          <Route
-            index
-            element={<Navigate replace to="cities" cities={cities} />}
-          />
-          <Route path="cities" element={<Cities cities={cities} />} />
-          <Route path="cities/:id" element={<TripDetails cities={cities} />} />
-          <Route path="country" element={<Countries cities={cities} />} />
-        </Route>
-        <Route path="*" element={<NotFound />} />
-      </Route>,
-    ),
-  )
-
-  return <RouterProvider router={router} />
-}
+const App = () => <RouterProvider router={router} />
 
 export { App }
