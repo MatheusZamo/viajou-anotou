@@ -234,11 +234,15 @@ const AppLayout = () => {
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker position={[latitude, longitude]}>
-            <Popup>
-              A pretty CSS3 popup. <br /> Easily customizable.
-            </Popup>
-          </Marker>
+
+          {cities.map(({ id, position }) => (
+            <Marker key={id} position={[position.latitude, position.longitude]}>
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          ))}
+
           <ChangeCenter position={[latitude, longitude]} />
         </MapContainer>
       </div>
@@ -303,6 +307,7 @@ const Countries = () => {
     </ul>
   )
 }
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
