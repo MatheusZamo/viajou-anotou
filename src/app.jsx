@@ -5,11 +5,13 @@ import {
   useLocation,
   useParams,
   useSearchParams,
+  useNavigate,
   RouterProvider,
   Route,
   NavLink,
   Link,
   Outlet,
+  Navigate,
 } from "react-router-dom"
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
 
@@ -257,6 +259,9 @@ const Cities = ({ cities }) => {
 const TripDetails = ({ cities }) => {
   const params = useParams()
   const city = cities.find((city) => String(city.id) === params.id)
+  const navigate = useNavigate()
+
+  const handleClickBack = () => navigate(-1)
   return (
     <div className="city-details">
       <div className="row">
@@ -267,6 +272,9 @@ const TripDetails = ({ cities }) => {
         <h5>Suas Anotações</h5>
         <p>{city.notes}</p>
       </div>
+      <button onClick={handleClickBack} className="btn-back">
+        &larr; Voltar
+      </button>
     </div>
   )
 }
@@ -302,7 +310,10 @@ const App = () => {
         <Route path="about" element={<About />} />
         <Route path="login" element={<Login />} />
         <Route path="app" element={<AppLayout />}>
-          <Route index element={<Cities cities={cities} />} />
+          <Route
+            index
+            element={<Navigate replace to="cities" cities={cities} />}
+          />
           <Route path="cities" element={<Cities cities={cities} />} />
           <Route path="cities/:id" element={<TripDetails cities={cities} />} />
           <Route path="country" element={<Countries cities={cities} />} />
