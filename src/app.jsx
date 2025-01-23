@@ -204,6 +204,7 @@ const AppLayout = () => {
   const latitude = searchParams.get("latitude")
   const longitude = searchParams.get("longitude")
   const cities = useLoaderData()
+  console.log(latitude)
 
   return (
     <main className="main-app-layout">
@@ -278,6 +279,7 @@ const TripDetails = () => {
   const navigate = useNavigate()
 
   const handleClickBack = () => navigate(-1)
+
   return (
     <div className="city-details">
       <div className="row">
