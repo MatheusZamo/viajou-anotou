@@ -200,11 +200,10 @@ const getDataCities = async () => {
 }
 
 const AppLayout = () => {
-  const [searchParams, setSearchParams] = useSearchParams(beloHorizontePosition)
+  const [searchParams] = useSearchParams()
   const latitude = searchParams.get("latitude")
   const longitude = searchParams.get("longitude")
   const cities = useLoaderData()
-  console.log(latitude)
 
   return (
     <main className="main-app-layout">
@@ -226,8 +225,11 @@ const AppLayout = () => {
       </div>
       <div className="map">
         <MapContainer
-          center={[latitude, longitude]}
-          zoom={13}
+          center={[
+            beloHorizontePosition.latitude,
+            beloHorizontePosition.longitude,
+          ]}
+          zoom={11}
           scrollWheelZoom={true}
           className="map-container"
         >
@@ -244,7 +246,9 @@ const AppLayout = () => {
             </Marker>
           ))}
 
-          <ChangeCenter position={[latitude, longitude]} />
+          {latitude && longitude && (
+            <ChangeCenter position={[latitude, longitude]} />
+          )}
         </MapContainer>
       </div>
     </main>
