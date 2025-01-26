@@ -15,6 +15,7 @@ import {
   Navigate,
 } from "react-router-dom"
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
+import localforage from "localforage"
 
 const links = [
   { path: "/", text: "Início" },
