@@ -198,7 +198,8 @@ const ChangeCenter = ({ position }) => {
 const ChangeToClickedCity = () => {
   const navigate = useNavigate()
   useMapEvents({
-    click: () => navigate("form"),
+    click: (e) =>
+      navigate(`form?latitude=${e.latlng.lat}&longitude=${e.latlng.lng}`),
   })
 }
 
@@ -329,15 +330,27 @@ const Countries = () => {
   )
 }
 
+const cityLoader = async ({ request }) => {
+  const url = new URL(request.url)
+  const latitude = url.searchParams.get("latitude")
+  const longitude = url.searchParams.get("longitude")
+  const response = await fetch(
+    `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}`,
+  )
+  const info = await response.json()
+  return { name: info.city, country: info.countryName }
+}
+
 const FormNewTrip = () => {
+  const city = useLoaderData()
   return (
     <form className="form-edit-city">
       <label>
         Nome da cidade
-        <input type="text" />
+        <input type="text" key={city.name} defaultValue={city.name} />
       </label>
       <label>
-        Quando você foi para [cidade clikada] ?
+        Quando você foi para {city.name} ?
         <input type="date" />
       </label>
       <label>
@@ -364,7 +377,7 @@ const router = createBrowserRouter(
         <Route path="cities" element={<Cities />} />
         <Route path="cities/:id" element={<TripDetails />} />
         <Route path="country" element={<Countries />} />
-        <Route path="form" element={<FormNewTrip />} />
+        <Route path="form" element={<FormNewTrip />} loader={cityLoader} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Route>,
