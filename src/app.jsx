@@ -194,10 +194,9 @@ const beloHorizontePosition = {
 }
 
 const getDataCities = async () => {
-  const data = await fetch(
-    "https://raw.githubusercontent.com/MatheusZamo/learning-react-router/refs/heads/main/src/fake-city.json",
-  )
-  return await data.json()
+  const data = await localforage.getItem("trip")
+  const response = (await data) ?? []
+  return await response
 }
 
 const AppLayout = () => {
@@ -260,7 +259,7 @@ const Cities = () => {
   const cities = useOutletContext()
 
   return cities.length === 0 ? (
-    <p>Adicione uma cidade</p>
+    <p className="initial-message">Clique no mapa para adicionar uma cidade</p>
   ) : (
     <ul className="cities">
       {cities.map(({ id, position, name }) => (
