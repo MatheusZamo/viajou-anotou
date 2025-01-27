@@ -13,6 +13,8 @@ import {
   Link,
   Outlet,
   Navigate,
+  Form,
+  redirect,
 } from "react-router-dom"
 import {
   MapContainer,
@@ -341,27 +343,60 @@ const cityLoader = async ({ request }) => {
   return { name: info.city, country: info.countryName }
 }
 
+const formAction = async ({ request }) => {
+  const url = new URL(request.url)
+  const latitude = url.searchParams.get("latitude")
+  const longitude = url.searchParams.get("longitude")
+  const formData = await request.formData()
+  const response = await fetch(
+    `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}`,
+  )
+  const { countryName } = await response.json()
+  const city = {
+    ...Object.fromEntries(formData),
+    position: { latitude, longitude },
+    id: crypto.randomUUID(),
+    country: countryName,
+  }
+  const cities = await localforage.getItem("trip")
+  await localforage.setItem("trip", cities ? [...cities, city] : [city])
+  return redirect("/app/cities")
+}
+
 const FormNewTrip = () => {
   const city = useLoaderData()
+  const navigate = useNavigate()
+
+  const handleClickBack = () => navigate("/app/cities")
   return (
-    <form className="form-edit-city">
+    <Form method="post" className="form-edit-city">
       <label>
         Nome da cidade
-        <input type="text" key={city.name} defaultValue={city.name} />
+        <input
+          name="name"
+          required
+          type="text"
+          key={city.name}
+          defaultValue={city.name}
+        />
       </label>
       <label>
         Quando você foi para {city.name} ?
-        <input type="date" />
+        <input name="date" required type="date" />
       </label>
       <label>
         Suas anotações sobre a cidade!
-        <textarea></textarea>
+        <textarea name="notes"></textarea>
       </label>
       <div className="buttons">
-        <button className="btn-back">&larr; Voltar</button>
-        <button className="btn-save">Salvar</button>
+        <button className="btn-back" type="button" onClick={handleClickBack}>
+          &larr; Voltar
+        </button>
+        <button className="btn-save" type="submit">
+          Salvar
+        </button>
       </div>
-    </form>
+    </Form>
   )
 }
 
@@ -377,7 +412,12 @@ const router = createBrowserRouter(
         <Route path="cities" element={<Cities />} />
         <Route path="cities/:id" element={<TripDetails />} />
         <Route path="country" element={<Countries />} />
-        <Route path="form" element={<FormNewTrip />} loader={cityLoader} />
+        <Route
+          path="form"
+          element={<FormNewTrip />}
+          loader={cityLoader}
+          action={formAction}
+        />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Route>,
