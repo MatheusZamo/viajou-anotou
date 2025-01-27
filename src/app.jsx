@@ -14,7 +14,14 @@ import {
   Outlet,
   Navigate,
 } from "react-router-dom"
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  useMapEvents,
+} from "react-leaflet"
 import localforage from "localforage"
 
 const links = [
@@ -188,6 +195,13 @@ const ChangeCenter = ({ position }) => {
   return null
 }
 
+const ChangeToClickedCity = () => {
+  const navigate = useNavigate()
+  useMapEvents({
+    click: () => navigate("form"),
+  })
+}
+
 const beloHorizontePosition = {
   latitude: "-19.917622853492556",
   longitude: "-43.94031082020503",
@@ -249,6 +263,7 @@ const AppLayout = () => {
           {latitude && longitude && (
             <ChangeCenter position={[latitude, longitude]} />
           )}
+          <ChangeToClickedCity />
         </MapContainer>
       </div>
     </main>
@@ -314,6 +329,29 @@ const Countries = () => {
   )
 }
 
+const FormNewTrip = () => {
+  return (
+    <form className="form-edit-city">
+      <label>
+        Nome da cidade
+        <input type="text" />
+      </label>
+      <label>
+        Quando você foi para [cidade clikada] ?
+        <input type="date" />
+      </label>
+      <label>
+        Suas anotações sobre a cidade!
+        <textarea></textarea>
+      </label>
+      <div className="buttons">
+        <button className="btn-back">&larr; Voltar</button>
+        <button className="btn-save">Salvar</button>
+      </div>
+    </form>
+  )
+}
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
@@ -326,6 +364,7 @@ const router = createBrowserRouter(
         <Route path="cities" element={<Cities />} />
         <Route path="cities/:id" element={<TripDetails />} />
         <Route path="country" element={<Countries />} />
+        <Route path="form" element={<FormNewTrip />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Route>,
