@@ -309,6 +309,11 @@ const TripDetails = () => {
       navigate("/app")
     }
   }
+  const handleClickEdit = (city) => {
+    navigate(
+      `/app/form?latitude=${city.position.latitude}&longitude=${city.position.longitude}`,
+    )
+  }
 
   return (
     <div className="city-details">
@@ -328,7 +333,9 @@ const TripDetails = () => {
         <button onClick={handleClickBack} className="btn-back">
           &larr; Voltar
         </button>
-        <button className="btn-edit">&there4; Editar</button>
+        <button className="btn-edit" onClick={() => handleClickEdit(city)}>
+          &there4; Editar
+        </button>
         <button className="btn-delete" onClick={() => handleClickDelete(city)}>
           &times; Deletar
         </button>
