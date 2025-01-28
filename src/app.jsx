@@ -308,13 +308,21 @@ const TripDetails = () => {
         <h5>Nome da Cidade</h5>
         <h3>{city.name}</h3>
       </div>
+      <div>
+        <h5>Quando você foi para {city.name}</h5>
+        <p>{city.date}</p>
+      </div>
       <div className="row">
         <h5>Suas Anotações</h5>
         <p>{city.notes}</p>
       </div>
-      <button onClick={handleClickBack} className="btn-back">
-        &larr; Voltar
-      </button>
+      <div className="buttons">
+        <button onClick={handleClickBack} className="btn-back">
+          &larr; Voltar
+        </button>
+        <button className="btn-edit">&there4; Editar</button>
+        <button className="btn-delete">&times; Deletar</button>
+      </div>
     </div>
   )
 }
@@ -360,7 +368,7 @@ const formAction = async ({ request }) => {
   }
   const cities = await localforage.getItem("trip")
   await localforage.setItem("trip", cities ? [...cities, city] : [city])
-  return redirect("/app/cities")
+  return redirect(`/app/cities/${city.id}`)
 }
 
 const FormNewTrip = () => {
