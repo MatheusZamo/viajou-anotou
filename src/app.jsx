@@ -286,7 +286,6 @@ const Cities = () => {
             to={`${id}?latitude=${position.latitude}&longitude=${position.longitude}`}
           >
             <h3>{name}</h3>
-            <button>&times;</button>
           </Link>
         </li>
       ))}
@@ -300,7 +299,16 @@ const TripDetails = () => {
   const city = cities.find((city) => String(city.id) === params.id)
   const navigate = useNavigate()
 
-  const handleClickBack = () => navigate(-1)
+  const handleClickBack = () => navigate("/app/cities")
+  const handleClickDelete = async (city) => {
+    if (confirm("Por favor, confirme que você quer deletar essa viagem.")) {
+      await localforage.setItem(
+        "trip",
+        cities.filter((c) => c.id !== city.id),
+      )
+    }
+    return redirect("/app/cities")
+  }
 
   return (
     <div className="city-details">
@@ -321,7 +329,9 @@ const TripDetails = () => {
           &larr; Voltar
         </button>
         <button className="btn-edit">&there4; Editar</button>
-        <button className="btn-delete">&times; Deletar</button>
+        <button className="btn-delete" onClick={() => handleClickDelete(city)}>
+          &times; Deletar
+        </button>
       </div>
     </div>
   )
