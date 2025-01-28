@@ -306,8 +306,8 @@ const TripDetails = () => {
         "trip",
         cities.filter((c) => c.id !== city.id),
       )
+      navigate("/app")
     }
-    return redirect("/app/cities")
   }
 
   return (
