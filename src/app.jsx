@@ -218,6 +218,15 @@ const getDataCities = async () => {
   return data ?? []
 }
 
+const deleteAction = async ({ params }) => {
+  const travels = await localforage.getItem("travels")
+  await localforage.setItem(
+    "travels",
+    travels ? travels.filter((city) => city.id !== params.id) : [],
+  )
+  return redirect("/app/cities")
+}
+
 const AppLayout = () => {
   const [searchParams] = useSearchParams()
   const latitude = searchParams.get("latitude")
@@ -302,13 +311,14 @@ const TripDetails = () => {
   const navigate = useNavigate()
 
   const handleClickBack = () => navigate("/app/cities")
-  const handleClickDelete = async (city) => {
-    if (confirm("Por favor, confirme que você quer deletar essa viagem.")) {
-      await localforage.setItem(
-        "travels",
-        cities.filter((c) => c.id !== city.id),
-      )
-      navigate("/app")
+
+  const deleteTrip = (e) => {
+    const wantToDelete = confirm(
+      "Por favor, confirme que você quer deletar essa viagem.",
+    )
+
+    if (!wantToDelete) {
+      e.preventDefault()
     }
   }
 
@@ -335,9 +345,11 @@ const TripDetails = () => {
             &there4; Editar
           </button>
         </Form>
-        <button className="btn-delete" onClick={() => handleClickDelete(city)}>
-          &times; Deletar
-        </button>
+        <Form method="post" action="delete" onSubmit={deleteTrip}>
+          <button className="btn-delete" type="submit">
+            &times; Deletar
+          </button>
+        </Form>
       </div>
     </div>
   )
@@ -478,6 +490,7 @@ const router = createBrowserRouter(
           loader={cityLoader}
           action={formAction}
         />
+        <Route path="cities/:id/delete" action={deleteAction} />
         <Route path="country" element={<Countries />} />
       </Route>
       <Route path="*" element={<NotFound />} />
