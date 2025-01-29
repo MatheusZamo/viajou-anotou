@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  redirect,
   useLocation,
   useParams,
   useSearchParams,
@@ -14,7 +15,6 @@ import {
   Outlet,
   Navigate,
   Form,
-  redirect,
 } from "react-router-dom"
 import {
   MapContainer,
@@ -199,9 +199,12 @@ const ChangeCenter = ({ position }) => {
 
 const ChangeToClickedCity = () => {
   const navigate = useNavigate()
+  const id = crypto.randomUUID()
   useMapEvents({
     click: (e) =>
-      navigate(`form?latitude=${e.latlng.lat}&longitude=${e.latlng.lng}`),
+      navigate(
+        `cities/${id}/edit?latitude=${e.latlng.lat}&longitude=${e.latlng.lng}`,
+      ),
   })
 }
 
@@ -211,7 +214,7 @@ const beloHorizontePosition = {
 }
 
 const getDataCities = async () => {
-  const data = await localforage.getItem("trip")
+  const data = await localforage.getItem("travels")
   return data ?? []
 }
 
@@ -219,7 +222,7 @@ const AppLayout = () => {
   const [searchParams] = useSearchParams()
   const latitude = searchParams.get("latitude")
   const longitude = searchParams.get("longitude")
-  const cities = useLoaderData()
+  const travels = useLoaderData()
 
   return (
     <main className="main-app-layout">
@@ -237,7 +240,7 @@ const AppLayout = () => {
             </li>
           </ul>
         </nav>
-        <Outlet context={cities} />
+        <Outlet context={travels} />
       </div>
       <div className="map">
         <MapContainer
@@ -254,7 +257,7 @@ const AppLayout = () => {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
 
-          {cities.map(({ id, position }) => (
+          {travels.map(({ id, position }) => (
             <Marker key={id} position={[position.latitude, position.longitude]}>
               <Popup>
                 A pretty CSS3 popup. <br /> Easily customizable.
@@ -302,16 +305,11 @@ const TripDetails = () => {
   const handleClickDelete = async (city) => {
     if (confirm("Por favor, confirme que você quer deletar essa viagem.")) {
       await localforage.setItem(
-        "trip",
+        "travels",
         cities.filter((c) => c.id !== city.id),
       )
       navigate("/app")
     }
-  }
-  const handleClickEdit = (city) => {
-    navigate(
-      `/app/form?latitude=${city.position.latitude}&longitude=${city.position.longitude}`,
-    )
   }
 
   return (
@@ -332,9 +330,11 @@ const TripDetails = () => {
         <button onClick={handleClickBack} className="btn-back">
           &larr; Voltar
         </button>
-        <button className="btn-edit" onClick={() => handleClickEdit(city)}>
-          &there4; Editar
-        </button>
+        <Form action="edit">
+          <button className="btn-edit" type="submit">
+            &there4; Editar
+          </button>
+        </Form>
         <button className="btn-delete" onClick={() => handleClickDelete(city)}>
           &times; Deletar
         </button>
@@ -356,38 +356,66 @@ const Countries = () => {
   )
 }
 
-const cityLoader = async ({ request }) => {
+const cityLoader = async ({ request, params }) => {
+  const cityInStorage = await localforage
+    .getItem("travels")
+    .then((cities) => cities?.find((city) => city.id === params.id))
+
+  if (cityInStorage) {
+    return cityInStorage
+  }
+
   const url = new URL(request.url)
-  const latitude = url.searchParams.get("latitude")
-  const longitude = url.searchParams.get("longitude")
+  const [latitude, longitude] = ["latitude", "longitude"].map((item) =>
+    url.searchParams.get(item),
+  )
   const response = await fetch(
-    `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}`,
+    `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt-BR`,
   )
   const info = await response.json()
-  return { name: info.city, country: info.countryName }
+  return { name: info.city, id: params.id }
 }
 
-const formAction = async ({ request }) => {
-  const url = new URL(request.url)
-  const latitude = url.searchParams.get("latitude")
-  const longitude = url.searchParams.get("longitude")
+const formAction = async ({ request, params }) => {
   const formData = await request.formData()
-  const response = await fetch(
-    `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}`,
+  const cities = await localforage.getItem("travels")
+  const cityInStorage = await localforage
+    .getItem("travels")
+    .then((cities) => cities?.find((city) => city.id === params.id))
+
+  if (cityInStorage) {
+    const city = {
+      ...Object.fromEntries(formData),
+      position: cityInStorage.position,
+      id: cityInStorage.id,
+      country: cityInStorage.country,
+    }
+    await localforage.setItem("travels", [
+      ...cities.filter((city) => city.id !== params.id),
+      city,
+    ])
+    return redirect(`/app/cities/${params.id}`)
+  }
+
+  const url = new URL(request.url)
+  const [latitude, longitude] = ["latitude", "longitude"].map((item) =>
+    url.searchParams.get(item),
   )
-  const { countryName } = await response.json()
+  const response = await fetch(
+    `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt-BR`,
+  )
+  const info = await response.json()
   const city = {
     ...Object.fromEntries(formData),
     position: { latitude, longitude },
-    id: crypto.randomUUID(),
-    country: countryName,
+    id: params.id,
+    country: info.countryName,
   }
-  const cities = await localforage.getItem("trip")
-  await localforage.setItem("trip", cities ? [...cities, city] : [city])
-  return redirect(`/app/cities/${city.id}`)
+  await localforage.setItem("travels", cities ? [...cities, city] : [city])
+  return redirect(`/app/cities/${params.id}`)
 }
 
-const FormNewTrip = () => {
+const EditCity = () => {
   const city = useLoaderData()
   const navigate = useNavigate()
 
@@ -395,7 +423,7 @@ const FormNewTrip = () => {
   return (
     <Form method="post" className="form-edit-city">
       <label>
-        Nome da cidade
+        <span>Nome da cidade</span>
         <input
           name="name"
           required
@@ -405,12 +433,21 @@ const FormNewTrip = () => {
         />
       </label>
       <label>
-        Quando você foi para {city.name} ?
-        <input name="date" required type="date" />
+        <span>Quando você foi para {city.name} ?</span>
+        <input
+          name="date"
+          required
+          type="date"
+          defaultValue={city.date || ""}
+        />
       </label>
       <label>
-        Suas anotações sobre a cidade!
-        <textarea name="notes"></textarea>
+        <span>Suas anotações sobre a cidade!</span>
+        <textarea
+          name="notes"
+          required
+          defaultValue={city.notes || ""}
+        ></textarea>
       </label>
       <div className="buttons">
         <button className="btn-back" type="button" onClick={handleClickBack}>
@@ -435,13 +472,13 @@ const router = createBrowserRouter(
         <Route index element={<Navigate replace to="cities" />} />
         <Route path="cities" element={<Cities />} />
         <Route path="cities/:id" element={<TripDetails />} />
-        <Route path="country" element={<Countries />} />
         <Route
-          path="form"
-          element={<FormNewTrip />}
+          path="cities/:id/edit"
+          element={<EditCity />}
           loader={cityLoader}
           action={formAction}
         />
+        <Route path="country" element={<Countries />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Route>,
