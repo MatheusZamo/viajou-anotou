@@ -212,8 +212,7 @@ const beloHorizontePosition = {
 
 const getDataCities = async () => {
   const data = await localforage.getItem("trip")
-  const response = (await data) ?? []
-  return await response
+  return data ?? []
 }
 
 const AppLayout = () => {
