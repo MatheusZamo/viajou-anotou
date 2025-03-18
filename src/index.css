@@ -468,6 +468,7 @@ main {
 
   .main-pricing h1 {
     font-size: 3rem;
+    line-height: normal;
   }
 
   .main-pricing p {
@@ -478,15 +479,40 @@ main {
     width: 310px;
     height: 250px;
   }
+
+  .main-about {
+    padding-top: 150px;
+  }
+
+  .main-about section {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .main-about div {
+    width: 300px;
+  }
+
+  .main-about h1 {
+    font-size: 3rem;
+    line-height: normal;
+  }
+
+  .main-about p {
+    font-size: 1.9rem;
+    margin: 0px;
+  }
+
+  .main-about img {
+    width: 310px;
+    height: 250px;
+  }
 }
 
-@media (min-width: 701px) and (max-width: 1023px) {
-  /* .nav {
-    display: none;
-  } */
+/* @media (min-width: 701px) and (max-width: 1023px) {
 
   .main-home h1 {
     font-size: 3rem;
     width: 450px;
   }
-}
+} */
