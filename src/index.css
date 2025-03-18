@@ -440,6 +440,7 @@ main {
 
   .nav ul {
     gap: 2.5rem;
+    padding-top: 2rem;
   }
 
   .main-home h1 {
@@ -451,5 +452,41 @@ main {
     max-width: none;
     width: 300px;
     font-size: 1.5rem;
+  }
+
+  .main-pricing {
+    padding-top: 150px;
+  }
+
+  .main-pricing section {
+    flex-direction: column;
+  }
+
+  .main-pricing div {
+    width: 300px;
+  }
+
+  .main-pricing h1 {
+    font-size: 3rem;
+  }
+
+  .main-pricing p {
+    margin: 0px;
+  }
+
+  .main-pricing img {
+    width: 310px;
+    height: 250px;
+  }
+}
+
+@media (min-width: 701px) and (max-width: 1023px) {
+  /* .nav {
+    display: none;
+  } */
+
+  .main-home h1 {
+    font-size: 3rem;
+    width: 450px;
   }
 }
