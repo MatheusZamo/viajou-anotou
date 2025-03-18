@@ -507,6 +507,10 @@ main {
     width: 310px;
     height: 250px;
   }
+
+  .form-login {
+    width: 300px;
+  }
 }
 
 /* @media (min-width: 701px) and (max-width: 1023px) {
