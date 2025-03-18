@@ -511,6 +511,40 @@ main {
   .form-login {
     width: 300px;
   }
+
+  .main-app-layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    flex-basis: 30rem;
+    width: 100%;
+    border-radius: 20px;
+  }
+
+  .cities {
+    height: 150px;
+  }
+
+  .map {
+    width: 100%;
+    border-radius: 20px;
+    margin-top: 20px;
+  }
+
+  .map-container {
+    border-radius: 20px;
+  }
+
+  .form-edit-city {
+    padding: 1rem 1.5rem;
+    gap: 1rem;
+  }
+
+  .city-details .buttons {
+    flex-direction: column;
+    margin-left: 35px;
+  }
 }
 
 /* @media (min-width: 701px) and (max-width: 1023px) {
