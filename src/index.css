@@ -487,6 +487,7 @@ main {
   .main-about section {
     flex-direction: column;
     gap: 2rem;
+    margin-top: 30px;
   }
 
   .main-about div {
@@ -524,6 +525,8 @@ main {
 
   .cities {
     height: 150px;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
   }
 
   .map {
