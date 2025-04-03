@@ -8,6 +8,7 @@ import {
   useNavigate,
   useLoaderData,
   useOutletContext,
+  useRouteError,
   RouterProvider,
   Route,
   NavLink,
@@ -46,7 +47,6 @@ const Logo = ({ version = "dark" }) => (
 const Header = () => {
   const location = useLocation()
   const isNotHomepage = location.pathname !== "/"
-
   return (
     <nav className="nav">
       <Logo version={isNotHomepage ? "dark" : "light"} />
@@ -165,6 +165,7 @@ const NotFound = () => (
 )
 
 const Login = () => {
+  throw new Error("Erro forçado no componente Login!")
   return (
     <>
       <Header />
@@ -473,27 +474,46 @@ const EditCity = () => {
   )
 }
 
+const ErrorPage = () => {
+  const error = useRouteError()
+
+  return (
+    <>
+      <Header />
+      <main className="main-error">
+        <section>
+          <h1>Opa!</h1>
+          <p>Desculpe, um erro inesperado aconteceu:</p>
+          <p>{error.statusText || error.message}</p>
+        </section>
+      </main>
+    </>
+  )
+}
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/">
-      <Route path="/" element={<Home />} />
-      <Route path="price" element={<Price />} />
-      <Route path="about" element={<About />} />
-      <Route path="login" element={<Login />} />
-      <Route path="app" element={<AppLayout />} loader={getDataCities}>
-        <Route index element={<Navigate replace to="cities" />} />
-        <Route path="cities" element={<Cities />} />
-        <Route path="cities/:id" element={<TripDetails />} />
-        <Route
-          path="cities/:id/edit"
-          element={<EditCity />}
-          loader={cityLoader}
-          action={formAction}
-        />
-        <Route path="cities/:id/delete" action={deleteAction} />
-        <Route path="country" element={<Countries />} />
+      <Route path="/" errorElement={<ErrorPage />}>
+        <Route path="/" element={<Home />} />
+        <Route path="price" element={<Price />} />
+        <Route path="about" element={<About />} />
+        <Route path="login" element={<Login />} />
+        <Route path="app" element={<AppLayout />} loader={getDataCities}>
+          <Route index element={<Navigate replace to="cities" />} />
+          <Route path="cities" element={<Cities />} />
+          <Route path="cities/:id" element={<TripDetails />} />
+          <Route
+            path="cities/:id/edit"
+            element={<EditCity />}
+            loader={cityLoader}
+            action={formAction}
+          />
+          <Route path="cities/:id/delete" action={deleteAction} />
+          <Route path="country" element={<Countries />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
       </Route>
-      <Route path="*" element={<NotFound />} />
     </Route>,
   ),
 )

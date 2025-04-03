@@ -118,7 +118,8 @@ main {
 .main-pricing,
 .main-about,
 .main-not-found,
-.main-login {
+.main-login,
+.main-error {
   background-color: white;
   color: var(--color-light-1);
   display: flex;
@@ -135,13 +136,20 @@ main {
   max-width: 75%;
 }
 
+.main-error section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .main-about section {
   flex-direction: row-reverse;
 }
 
 .main-pricing h1,
 .main-about h1,
-.main-not-found h1 {
+.main-not-found h1,
+.main-error h1 {
   font-size: 5rem;
   font-weight: 800;
   line-height: 6rem;
@@ -153,6 +161,12 @@ main {
   font-size: 2rem;
   font-weight: 400;
   margin: 3rem 0;
+}
+
+.main-error p {
+  font-size: 2rem;
+  font-weight: 400;
+  margin: 2rem 0;
 }
 
 .main-pricing img,
