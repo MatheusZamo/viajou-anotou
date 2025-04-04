@@ -165,7 +165,6 @@ const NotFound = () => (
 )
 
 const Login = () => {
-  throw new Error("Erro forçado no componente Login!")
   return (
     <>
       <Header />
@@ -358,12 +357,28 @@ const TripDetails = () => {
 
 const Countries = () => {
   const cities = useOutletContext()
-  const groupedByCountry = Object.groupBy(cities, ({ country }) => country)
-  const countries = Object.keys(groupedByCountry)
+
+  const groupedByCountry = cities.reduce((acc, city) => {
+    const normalizedCountry = city.country.trim().toLowerCase()
+    if (!acc[normalizedCountry]) {
+      acc[normalizedCountry] = {
+        originalName: city.country,
+        cities: [],
+      }
+    }
+    acc[normalizedCountry].cities.push(city)
+
+    return acc
+  }, {})
+
+  const countries = Array.from(
+    new Set(cities.map((city) => city.country.trim())),
+  )
+
   return (
     <ul className="countries">
-      {countries.map((country) => {
-        return <li key={country.id}>{country}</li>
+      {countries.map((country, i) => {
+        return <li key={i}>{country}</li>
       })}
     </ul>
   )
