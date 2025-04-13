@@ -358,22 +358,10 @@ const TripDetails = () => {
 const Countries = () => {
   const cities = useOutletContext()
 
-  const groupedByCountry = cities.reduce((acc, city) => {
-    const normalizedCountry = city.country.trim().toLowerCase()
-    if (!acc[normalizedCountry]) {
-      acc[normalizedCountry] = {
-        originalName: city.country,
-        cities: [],
-      }
-    }
-    acc[normalizedCountry].cities.push(city)
-
-    return acc
-  }, {})
-
-  const countries = Array.from(
-    new Set(cities.map((city) => city.country.trim())),
-  )
+  const countries = cities.reduce((acc, city) => {
+    const duplicatedCountry = acc.some((accItem) => accItem === city.country)
+    return duplicatedCountry ? acc : [...acc, city.country]
+  }, [])
 
   return (
     <ul className="countries">
