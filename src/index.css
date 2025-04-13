@@ -447,6 +447,26 @@ main {
   transition: all 0.2s;
 }
 
+.mr-05 {
+  margin-right: 0.5rem;
+}
+
+.mb--3px {
+  margin-bottom: -3px;
+}
+
+.pa {
+  position: absolute;
+}
+
+.r1 {
+  right: 1rem;
+}
+
+.t-3-5 {
+  top: 3.5rem;
+}
+
 @media (max-width: 700px) {
   .nav {
     flex-direction: column;

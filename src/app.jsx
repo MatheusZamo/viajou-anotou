@@ -284,6 +284,11 @@ const AppLayout = () => {
   )
 }
 
+const CountryFlag = ({ country, className, width = 20, height = 15 }) => {
+  const src = `https://flagcdn.com/${width}x${height}/${country?.code}.png`
+  return <img className={className} src={src} alt={country?.name} />
+}
+
 const Cities = () => {
   const cities = useOutletContext()
 
@@ -291,11 +296,12 @@ const Cities = () => {
     <p className="initial-message">Clique no mapa para adicionar uma cidade</p>
   ) : (
     <ul className="cities">
-      {cities.map(({ id, position, name }) => (
+      {cities.map(({ id, position, name, country }) => (
         <li key={id}>
           <Link
             to={`${id}?latitude=${position.latitude}&longitude=${position.longitude}`}
           >
+            <CountryFlag country={country} />
             <h3>{name}</h3>
           </Link>
         </li>
@@ -326,7 +332,10 @@ const TripDetails = () => {
     <div className="city-details">
       <div className="row">
         <h5>Nome da Cidade</h5>
-        <h3>{city.name}</h3>
+        <h3>
+          <CountryFlag country={city.country} />
+          {city.name}
+        </h3>
       </div>
       <div>
         <h5>Quando você foi para {city.name}</h5>
@@ -359,14 +368,26 @@ const Countries = () => {
   const cities = useOutletContext()
 
   const countries = cities.reduce((acc, city) => {
-    const duplicatedCountry = acc.some((accItem) => accItem === city.country)
+    const duplicatedCountry = acc.some(
+      (accItem) => accItem.name === city.country.name,
+    )
     return duplicatedCountry ? acc : [...acc, city.country]
   }, [])
 
   return (
     <ul className="countries">
-      {countries.map((country, i) => {
-        return <li key={i}>{country}</li>
+      {countries.map((country) => {
+        return (
+          <li key={country.name}>
+            <CountryFlag
+              country={country}
+              width={24}
+              height={18}
+              className="mr-05 mb--3px"
+            />
+            {country.name}
+          </li>
+        )
       })}
     </ul>
   )
@@ -389,11 +410,15 @@ const cityLoader = async ({ request, params }) => {
     `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt-BR`,
   )
   const info = await response.json()
-  return { name: info.city, id: params.id }
+  return {
+    name: info.city,
+    id: params.id,
+    country: { name: info.countryName, code: info.countryCode.toLowerCase() },
+  }
 }
 
 const formAction = async ({ request, params }) => {
-  const formData = await request.formData()
+  const formData = Object.fromEntries(await request.formData())
   const cities = await localforage.getItem("travels")
   const cityInStorage = await localforage
     .getItem("travels")
@@ -401,10 +426,8 @@ const formAction = async ({ request, params }) => {
 
   if (cityInStorage) {
     const city = {
-      ...Object.fromEntries(formData),
-      position: cityInStorage.position,
-      id: cityInStorage.id,
-      country: cityInStorage.country,
+      ...cityInStorage,
+      ...formData,
     }
     await localforage.setItem("travels", [
       ...cities.filter((city) => city.id !== params.id),
@@ -422,10 +445,10 @@ const formAction = async ({ request, params }) => {
   )
   const info = await response.json()
   const city = {
-    ...Object.fromEntries(formData),
+    ...formData,
     position: { latitude, longitude },
     id: params.id,
-    country: info.countryName,
+    country: { name: info.countryName, code: info.countryCode.toLowerCase() },
   }
   await localforage.setItem("travels", cities ? [...cities, city] : [city])
   return redirect(`/app/cities/${params.id}`)
@@ -434,6 +457,7 @@ const formAction = async ({ request, params }) => {
 const EditCity = () => {
   const city = useLoaderData()
   const navigate = useNavigate()
+  console.log(city)
 
   const handleClickBack = () => navigate("/app/cities")
   return (
