@@ -227,11 +227,46 @@ const deleteAction = async ({ params }) => {
   return redirect("/app/cities")
 }
 
-const AppLayout = () => {
+const Map = ({ cities }) => {
   const [searchParams] = useSearchParams()
   const latitude = searchParams.get("latitude")
   const longitude = searchParams.get("longitude")
-  const travels = useLoaderData()
+
+  return (
+    <div className="map">
+      <MapContainer
+        center={[
+          beloHorizontePosition.latitude,
+          beloHorizontePosition.longitude,
+        ]}
+        zoom={11}
+        scrollWheelZoom={true}
+        className="map-container"
+      >
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+
+        {cities.map(({ id, position }) => (
+          <Marker key={id} position={[position.latitude, position.longitude]}>
+            <Popup>
+              A pretty CSS3 popup. <br /> Easily customizable.
+            </Popup>
+          </Marker>
+        ))}
+
+        {latitude && longitude && (
+          <ChangeCenter position={[latitude, longitude]} />
+        )}
+        <ChangeToClickedCity />
+      </MapContainer>
+    </div>
+  )
+}
+
+const AppLayout = () => {
+  const cities = useLoaderData()
 
   return (
     <main className="main-app-layout">
@@ -249,37 +284,9 @@ const AppLayout = () => {
             </li>
           </ul>
         </nav>
-        <Outlet context={travels} />
+        <Outlet context={cities} />
       </div>
-      <div className="map">
-        <MapContainer
-          center={[
-            beloHorizontePosition.latitude,
-            beloHorizontePosition.longitude,
-          ]}
-          zoom={11}
-          scrollWheelZoom={true}
-          className="map-container"
-        >
-          <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-
-          {travels.map(({ id, position }) => (
-            <Marker key={id} position={[position.latitude, position.longitude]}>
-              <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </Popup>
-            </Marker>
-          ))}
-
-          {latitude && longitude && (
-            <ChangeCenter position={[latitude, longitude]} />
-          )}
-          <ChangeToClickedCity />
-        </MapContainer>
-      </div>
+      <Map cities={cities} />
     </main>
   )
 }
@@ -457,7 +464,6 @@ const formAction = async ({ request, params }) => {
 const EditCity = () => {
   const city = useLoaderData()
   const navigate = useNavigate()
-  console.log(city)
 
   const handleClickBack = () => navigate("/app/cities")
   return (
