@@ -406,13 +406,7 @@ const fetchCity = (id) =>
     .getItem("travels")
     .then((travels) => travels?.find((travel) => travel.id === id))
 
-const cityLoader = async ({ request, params }) => {
-  const cityInStorage = await fetchCity(params.id)
-
-  if (cityInStorage) {
-    return cityInStorage
-  }
-
+const fetchCityInfo = async (request) => {
   const url = new URL(request.url)
   const [latitude, longitude] = ["latitude", "longitude"].map((item) =>
     url.searchParams.get(item),
@@ -420,12 +414,25 @@ const cityLoader = async ({ request, params }) => {
   const response = await fetch(
     `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt-BR`,
   )
-  const info = await response.json()
+
+  const { city, countryName, countryCode } = await response.json()
+
   return {
-    name: info.city,
-    id: params.id,
-    country: { name: info.countryName, code: info.countryCode.toLowerCase() },
+    name: city,
+    country: { name: countryName, code: countryCode.toLowerCase() },
+    position: { latitude, longitude },
   }
+}
+
+const cityLoader = async ({ request, params }) => {
+  const cityInStorage = await fetchCity(params.id)
+
+  if (cityInStorage) {
+    return cityInStorage
+  }
+
+  const cityInfo = await fetchCityInfo(request)
+  return { ...cityInfo, id: params.id }
 }
 
 const formAction = async ({ request, params }) => {
@@ -445,20 +452,9 @@ const formAction = async ({ request, params }) => {
     return redirect(`/app/cities/${params.id}`)
   }
 
-  const url = new URL(request.url)
-  const [latitude, longitude] = ["latitude", "longitude"].map((item) =>
-    url.searchParams.get(item),
-  )
-  const response = await fetch(
-    `https://api-bdc.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=pt-BR`,
-  )
-  const info = await response.json()
-  const city = {
-    ...formData,
-    position: { latitude, longitude },
-    id: params.id,
-    country: { name: info.countryName, code: info.countryCode.toLowerCase() },
-  }
+  const cityInfo = await fetchCityInfo(request)
+  const city = { id: params.id, ...cityInfo, ...formData }
+
   await localforage.setItem("travels", cities ? [...cities, city] : [city])
   return redirect(`/app/cities/${params.id}`)
 }
