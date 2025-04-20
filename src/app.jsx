@@ -229,8 +229,9 @@ const deleteAction = async ({ params }) => {
 
 const Map = ({ cities }) => {
   const [searchParams] = useSearchParams()
-  const latitude = searchParams.get("latitude")
-  const longitude = searchParams.get("longitude")
+  const [latitude, longitude] = ["latitude", "longitude"].map((item) =>
+    searchParams.get(item),
+  )
 
   return (
     <div className="map">
@@ -400,10 +401,13 @@ const Countries = () => {
   )
 }
 
-const cityLoader = async ({ request, params }) => {
-  const cityInStorage = await localforage
+const fetchCity = (id) =>
+  localforage
     .getItem("travels")
-    .then((cities) => cities?.find((city) => city.id === params.id))
+    .then((travels) => travels?.find((travel) => travel.id === id))
+
+const cityLoader = async ({ request, params }) => {
+  const cityInStorage = await fetchCity(params.id)
 
   if (cityInStorage) {
     return cityInStorage
@@ -427,9 +431,7 @@ const cityLoader = async ({ request, params }) => {
 const formAction = async ({ request, params }) => {
   const formData = Object.fromEntries(await request.formData())
   const cities = await localforage.getItem("travels")
-  const cityInStorage = await localforage
-    .getItem("travels")
-    .then((cities) => cities?.find((city) => city.id === params.id))
+  const cityInStorage = await fetchCity(params.id)
 
   if (cityInStorage) {
     const city = {
