@@ -584,6 +584,14 @@ main {
   }
 }
 
+.btn-logout {
+  z-index: 999;
+  position: absolute;
+  top: 4rem;
+  right: 4rem;
+  background-color: var(--color-primary);
+}
+
 /* @media (min-width: 701px) and (max-width: 1023px) {
 
   .main-home h1 {
