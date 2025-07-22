@@ -16,6 +16,7 @@ import {
   Outlet,
   Navigate,
   Form,
+  useActionData,
 } from "react-router-dom"
 import {
   MapContainer,
@@ -165,6 +166,7 @@ const NotFound = () => (
 )
 
 const Login = () => {
+  const actionData = useActionData()
   return (
     <>
       <Header />
@@ -183,6 +185,9 @@ const Login = () => {
               </label>
             </div>
             <button>Login</button>
+            {actionData && actionData.error ? (
+              <p style={{ color: "red" }}>{actionData.error}</p>
+            ) : null}
           </Form>
         </section>
       </main>
@@ -551,6 +556,10 @@ const fakeAuthProvider = {
 
 const loginAction = async ({ request }) => {
   const { email } = Object.fromEntries(await request.formData())
+
+  if (email.length <= 3) {
+    return { error: "O email não pode ter menos de 4 caracteres" }
+  }
 
   try {
     await fakeAuthProvider.signIn(email)
