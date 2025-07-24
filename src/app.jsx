@@ -172,7 +172,7 @@ const Login = () => {
       <Header />
       <main className="main-login">
         <section>
-          <Form method="post" className="form-login">
+          <Form method="post" className="form-login" replace>
             <div className="row">
               <label>
                 Email
