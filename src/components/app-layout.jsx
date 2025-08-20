@@ -1,6 +1,8 @@
 import { Form, NavLink, Outlet, useLoaderData } from "react-router-dom"
 import { Logo } from "./logo"
-import { Map } from "./map"
+import { lazy, Suspense } from "react"
+
+const Map = lazy(() => import("./map"))
 
 const AppLayout = () => {
   const cities = useLoaderData()
@@ -23,7 +25,10 @@ const AppLayout = () => {
         </nav>
         <Outlet context={cities} />
       </div>
-      <Map cities={cities} />
+      <Suspense fallback={<h3>Carregando...</h3>}>
+        <Map cities={cities} />
+      </Suspense>
+
       <Form method="post" action="/logout">
         <button className="btn-logout">Logout</button>
       </Form>

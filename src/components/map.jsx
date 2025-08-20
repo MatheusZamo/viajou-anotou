@@ -69,4 +69,4 @@ const Map = ({ cities }) => {
   )
 }
 
-export { Map }
+export default Map
