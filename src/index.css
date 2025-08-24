@@ -589,7 +589,16 @@ main {
   position: absolute;
   top: 4rem;
   right: 4rem;
-  background-color: var(--color-primary);
+  background-color: var(--color-dark-1);
+  border-radius: 5px;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  color: var(--color-light-2);
+  font-family: inherit;
 }
 
 /* @media (min-width: 701px) and (max-width: 1023px) {
